@@ -10,7 +10,7 @@ import (
 )
 
 type Adapter struct {
-	DB *sql.DB
+	db *sql.DB
 }
 
 func NewAdapter(driverName, dataSourceName string) (*Adapter, error) {
@@ -24,23 +24,27 @@ func NewAdapter(driverName, dataSourceName string) (*Adapter, error) {
 		log.Fatalf("DB Connection Failure : %v", err)
 	}
 
-	return &Adapter{DB: db}, nil
+	return &Adapter{db: db}, nil
 }
 
 func (da Adapter) CloseDbConnection() {
-	err := da.DB.Close()
+	err := da.db.Close()
 	if err != nil {
-		log.Fatalf("DB Close Failure")
+		log.Fatalf("DB Close Failure : %v", err)
 	}
 }
 
 func (da Adapter) AddToHistory(answer int32, operation string) error {
-	qs, args, err := squirrel.Insert("arith_history").Columns("date", "answer", "operation").Values(time.Now(), answer, operation).ToSql()
+	qs, args, err := squirrel.Insert("arith_history").
+		Columns("date", "answer", "operation").
+		Values(time.Now(), answer, operation).
+		ToSql()
+
 	if err != nil {
 		return err
 	}
 
-	_, err = da.DB.Exec(qs, args...)
+	_, err = da.db.Exec(qs, args...)
 	if err != nil {
 		return err
 	}
