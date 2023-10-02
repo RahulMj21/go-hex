@@ -22,12 +22,12 @@ func (apia Adapter) GetAddition(a, b int32) (int32, error) {
 	}
 	return answer, nil
 }
-func (apia Adapter) GetSubstraction(a, b int32) (int32, error) {
-	answer, err := apia.arith.Substraction(a, b)
+func (apia Adapter) GetSubtraction(a, b int32) (int32, error) {
+	answer, err := apia.arith.Subtraction(a, b)
 	if err != nil {
 		return 0, err
 	}
-	err = apia.db.AddToHistory(answer, "substraction")
+	err = apia.db.AddToHistory(answer, "subtraction")
 	if err != nil {
 		return 0, err
 	}
